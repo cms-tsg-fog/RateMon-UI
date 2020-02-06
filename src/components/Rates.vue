@@ -6,7 +6,7 @@
         <v-spacer></v-spacer>
         <div>
           <v-btn color="white" text x-large @click.stop="dialog = true">
-            {{ selectedTriggers.length}} Triggers
+            {{ selectedTriggers.length }} Triggers
           </v-btn>
           &nbsp;RUN:
           <v-btn color="white" text>
@@ -36,8 +36,8 @@
         </v-row>
         <v-row>
           <template v-for="plot in plotsToDraw" class="pa-2">
-            <v-col cols="12" sm="12" md="6" :key="selectedRun + plot[0].trigger">
-              <Plotly :data="plot" :layout="{'title':plot[0].trigger}" :display-mode-bar="false"></Plotly>
+            <v-col cols="12" sm="12" md="6" :key="selectedRun + plot[0].trigger" style="padding:0px">
+              <Plotly :data="plot" :layout="{'title':plot[0].trigger, 'titlefont':{'family':'Inter'},  'xaxis': {'title': plot[0].xvar, 'titlefont':{'family':'Inter'}}, 'yaxis': {'title': plot[0].yvar, 'titlefont':{'family':'Inter'}}}" :display-mode-bar="false"></Plotly>
             </v-col>
           </template>
         </v-row>
@@ -138,8 +138,13 @@ export default {
               let plot = [{
                 x: response.data.xVals,
                 y: response.data.yVals,
+                xvar: response.data.xvar,
+                yvar: response.data.yvar,
                 type: "scattergl",
                 mode: "markers",
+                marker: {
+                  size: 3
+                },
                 trigger,
               }]
               this.plots.push(plot)
