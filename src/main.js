@@ -6,6 +6,7 @@ import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
+
 import axios from 'axios'
 Vue.prototype.$axios = axios
 
