@@ -57,7 +57,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-footer>API: {{ apiEndpoint }} - {{commitHash}} - gitlab.cern.ch/avivace/ratemon-ui</v-footer>
+    <v-footer fixed>API: <a target="_blank" :href="apiEndpoint + 'ui'"> {{ apiEndpoint }}</a> - commithash:<pre>{{commitHash}}</pre> - feedback: <a href="https://gitlab.cern.ch/avivace/ratemon-ui">gitlab.cern.ch/avivace/ratemon-ui</a></v-footer>
   </v-app>
 </template>
 <script>
