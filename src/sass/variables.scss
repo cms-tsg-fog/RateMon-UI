@@ -3,7 +3,7 @@
 // Globals
 $body-font-family: 'Inter', serif;
 $border-radius-root: 6px;
-$font-size-root: 16px;
+$font-size-root: 17px;
 
 // Variables must come before the import
 $btn-letter-spacing: 0;
@@ -31,7 +31,7 @@ $headings: (
 );
 
 .v-text-field input {
-  width: 60px;
+  width: 90px;
 }
 .v-select.v-text-field input {
   -webkit-box-flex: 1;
@@ -47,8 +47,4 @@ $headings: (
   margin-left: auto;
   padding-left: 4px;
   margin-top: 20px;
-}
-
-.col {
-  padding:0px;
 }

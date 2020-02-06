@@ -22,7 +22,7 @@
         <v-row>
           <v-col cols="12" sm="12" md="12">
             <div class="text-center">
-              <v-pagination @input="plotRates" v-model="selectedPage" :length="totalPages"></v-pagination>
+              <v-pagination color="deep-purple accent-4" @input="plotRates" v-model="selectedPage" :length="totalPages"></v-pagination>
             </div>
           </v-col>
           <v-col cols="12" sm="12" md="12">
@@ -77,7 +77,7 @@ export default {
     totalPages: 0,
     commitHash: process.env.VUE_APP_GIT_HASH,
     apiEndpoint: 'http://localhost:8081/api/v1/',
-    availableRuns: [305112, 315257, 315259, 315264],
+    availableRuns: [325172, 325170, 325169, 325159, 325117, 325057, 305112, 315257, 315259, 315264],
     selectedRun: null,
     selectedTriggers: ["HLT_PFJet450", "HLT_AK8PFJet200", "HLT_Photon60_R9Id90_CaloIdL_IsoL_DisplacedIdL_PFHT350MinPFJet15", "L1_SingleEG26er2p5", "L1_SingleTau120er2p1"],
     dialog: false,
@@ -135,6 +135,7 @@ export default {
             if (response.data.xVals == null) {
               this.ignoredPlots.push(trigger)
             } else {
+              console.log(response.data.fit)
               let plot = [{
                 x: response.data.xVals,
                 y: response.data.yVals,
