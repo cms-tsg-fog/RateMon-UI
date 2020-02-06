@@ -6,4 +6,4 @@ import '../sass/variables.scss';
 
 Vue.use(Vuetify);
 
-export default new Vuetify({});
+export default new Vuetify({iconfont: 'mdiSvg'});

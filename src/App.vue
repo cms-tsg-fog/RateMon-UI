@@ -1,22 +1,16 @@
 <template>
-  <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-Vue Template</div>
-    </v-app-bar>
-    <v-content>
-      <HelloWorld />
-    </v-content>
-  </v-app>
+
+      <Rates />
+
 </template>
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+import Rates from './components/Rates.vue';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    Rates,
   },
 
   data: () => ({

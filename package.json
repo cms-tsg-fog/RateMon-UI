@@ -11,13 +11,16 @@
     "@fortawesome/fontawesome-free": "^5.12.1",
     "axios": "^0.19.2",
     "core-js": "^3.4.4",
+    "git-describe": "^4.0.4",
     "roboto-fontface": "^0.10.0",
     "vue": "^2.6.10",
+    "vue-plotly": "^1.1.0",
     "vue-router": "^3.1.5",
     "vuetify": "^2.2.10",
     "vuex": "^3.1.2"
   },
   "devDependencies": {
+    "@mdi/font": "^4.9.95",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-plugin-eslint": "^4.1.0",
     "@vue/cli-plugin-router": "^4.1.0",
