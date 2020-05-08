@@ -35,11 +35,15 @@
           </v-col>
         </v-row>
         <v-row>
+          <div ref="drawing" style="width:800px; height:600px"></div>
+
+          <!--
           <template v-for="plot in plotsToDraw" class="pa-2">
             <v-col cols="12" sm="12" md="6" :key="selectedRun + plot[0].trigger" style="padding:0px">
               <Plotly :data="plot" :layout="{'title':plot[0].trigger, 'titlefont':{'family':'Inter'},  'xaxis': {'title': plot[0].xvar, 'titlefont':{'family':'Inter'}}, 'yaxis': {'title': plot[0].yvar, 'titlefont':{'family':'Inter'}}}" :display-mode-bar="false"></Plotly>
             </v-col>
           </template>
+        -->
         </v-row>
       </v-container>
     </v-content>
@@ -61,13 +65,8 @@
   </v-app>
 </template>
 <script>
-import { Plotly } from 'vue-plotly'
 export default {
   name: 'Rates',
-
-  components: {
-    Plotly
-  },
   data: () => ({
     selectedPage: 1,
     ignoredPlots: [],
@@ -173,6 +172,12 @@ export default {
     // Autoselects the first
     this.selectedRun = this.availableRuns[0]
     this.getRates();
+
+    let targetdiv = this.$refs.drawing
+    
+    JSROOT.NewHttpRequest("hpx.json", 'object', function(obj) {
+      JSROOT.draw(targetdiv, obj, "hist");
+    }).send();
   },
 };
 
