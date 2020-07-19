@@ -170,14 +170,15 @@ export default {
   },
   mounted: function() {
     // Autoselects the first
-    this.selectedRun = this.availableRuns[0]
-    this.getRates();
+    //this.selectedRun = this.availableRuns[0]
+    //this.getRates();
 
     let targetdiv = this.$refs.drawing
-    
-    JSROOT.NewHttpRequest("hpx.json", 'object', function(obj) {
-      JSROOT.draw(targetdiv, obj, "hist");
-    }).send();
+    new JSROOT.TFile("rates/HLT_Ele40_WPTight_Gsf.ROOT", function(file) {
+      file.ReadObject("HLT_Ele40_WPTight_Gsf_< PU >_vs_pre-deadtime unprescaled rate;1", function(obj) {
+      JSROOT.draw(targetdiv, obj);
+      });
+    });
   },
 };
 
