@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <div>
-      <v-app-bar color="deep-purple accent-4" dense dark flat>
-        <v-toolbar-title>RateMon UI</v-toolbar-title>
+      <v-app-bar color="deep-blue accent-4" dense dark flat>
+        <v-toolbar-title><b> CMS</b> <i> Rate Monitoring</i> UI</v-toolbar-title>
         <v-spacer></v-spacer>
         <div>
           <v-btn color="white" text x-large @click.stop="dialog = true">
@@ -35,11 +35,15 @@
           </v-col>
         </v-row>
         <v-row>
+          <div ref="drawing" style="width:800px; height:600px"></div>
+
+          <!--
           <template v-for="plot in plotsToDraw" class="pa-2">
             <v-col cols="12" sm="12" md="6" :key="selectedRun + plot[0].trigger" style="padding:0px">
               <Plotly :data="plot" :layout="{'title':plot[0].trigger, 'titlefont':{'family':'Inter'},  'xaxis': {'title': plot[0].xvar, 'titlefont':{'family':'Inter'}}, 'yaxis': {'title': plot[0].yvar, 'titlefont':{'family':'Inter'}}}" :display-mode-bar="false"></Plotly>
             </v-col>
           </template>
+        -->
         </v-row>
       </v-container>
     </v-content>
@@ -57,17 +61,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-footer fixed>API: <a target="_blank" :href="apiEndpoint + 'ui'"> {{ apiEndpoint }}</a> - commithash:<pre>{{commitHash}}</pre> - feedback: <a href="https://gitlab.cern.ch/avivace/ratemon-ui">gitlab.cern.ch/avivace/ratemon-ui</a></v-footer>
+    <v-footer fixed> JSROOT - API: <a target="_blank" :href="apiEndpoint + 'ui'"> {{ apiEndpoint }}</a> - commithash:<pre>{{commitHash}}</pre> - feedback: <a href="https://gitlab.cern.ch/avivace/ratemon-ui">gitlab.cern.ch/avivace/ratemon-ui</a></v-footer>
   </v-app>
 </template>
 <script>
-import { Plotly } from 'vue-plotly'
 export default {
   name: 'Rates',
-
-  components: {
-    Plotly
-  },
   data: () => ({
     selectedPage: 1,
     ignoredPlots: [],
@@ -171,8 +170,21 @@ export default {
   },
   mounted: function() {
     // Autoselects the first
-    this.selectedRun = this.availableRuns[0]
-    this.getRates();
+    //this.selectedRun = this.availableRuns[0]
+    //this.getRates();
+
+    // Reconstruct the object name given by RateMon's PlotMaker class
+    let targetdiv = this.$refs.drawing
+    let var_X = "< PU >"
+    let var_Y = "pre-deadtime unprescaled rate"
+    let trigger = "HLT_CaloJet500_NoJetID"
+    let objectName = `${trigger}_${var_X}_vs_${var_Y};1`
+
+    new JSROOT.TFile("http://brandeis.cern.ch:8085/api/v1/ratesROOT?runNumber=305112&triggerKey=HLT_CaloJet500_NoJetID", function(file) {
+      file.ReadObject(objectName, function(obj) {
+      JSROOT.draw(targetdiv, obj);
+      });
+    });
   },
 };
 
