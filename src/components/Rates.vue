@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <div>
-      <v-app-bar color="deep-purple accent-4" dense dark flat>
-        <v-toolbar-title>RateMon UI</v-toolbar-title>
+      <v-app-bar color="deep-blue accent-4" dense dark flat>
+        <v-toolbar-title><b> CMS</b> <i> Rate Monitoring</i> UI</v-toolbar-title>
         <v-spacer></v-spacer>
         <div>
           <v-btn color="white" text x-large @click.stop="dialog = true">
@@ -61,7 +61,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-footer fixed>API: <a target="_blank" :href="apiEndpoint + 'ui'"> {{ apiEndpoint }}</a> - commithash:<pre>{{commitHash}}</pre> - feedback: <a href="https://gitlab.cern.ch/avivace/ratemon-ui">gitlab.cern.ch/avivace/ratemon-ui</a></v-footer>
+    <v-footer fixed> JSROOT - API: <a target="_blank" :href="apiEndpoint + 'ui'"> {{ apiEndpoint }}</a> - commithash:<pre>{{commitHash}}</pre> - feedback: <a href="https://gitlab.cern.ch/avivace/ratemon-ui">gitlab.cern.ch/avivace/ratemon-ui</a></v-footer>
   </v-app>
 </template>
 <script>
