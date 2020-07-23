@@ -173,9 +173,15 @@ export default {
     //this.selectedRun = this.availableRuns[0]
     //this.getRates();
 
+    // Reconstruct the object name given by RateMon's PlotMaker class
     let targetdiv = this.$refs.drawing
-    new JSROOT.TFile("rates/HLT_Ele40_WPTight_Gsf.ROOT", function(file) {
-      file.ReadObject("HLT_Ele40_WPTight_Gsf_< PU >_vs_pre-deadtime unprescaled rate;1", function(obj) {
+    let var_X = "< PU >"
+    let var_Y = "pre-deadtime unprescaled rate"
+    let trigger = "HLT_CaloJet500_NoJetID"
+    let objectName = `${trigger}_${var_X}_vs_${var_Y};1`
+
+    new JSROOT.TFile("http://brandeis.cern.ch:8085/api/v1/ratesROOT?runNumber=305112&triggerKey=HLT_CaloJet500_NoJetID", function(file) {
+      file.ReadObject(objectName, function(obj) {
       JSROOT.draw(targetdiv, obj);
       });
     });
