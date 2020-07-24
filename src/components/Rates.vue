@@ -22,7 +22,7 @@
         <v-row>
           <v-col cols="12" sm="12" md="12">
             <div class="text-center">
-              <v-pagination color="deep-purple accent-4" @input="plotRates" v-model="selectedPage" :length="totalPages"></v-pagination>
+              <!--<v-pagination color="deep-purple accent-4" @input="plotRates" v-model="selectedPage" :length="totalPages"></v-pagination>-->
             </div>
           </v-col>
           <v-col cols="12" sm="12" md="12">
