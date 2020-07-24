@@ -6,7 +6,7 @@
         <v-spacer></v-spacer>
         <div>
           <v-btn color="white" text x-large @click.stop="dialog = true">
-            {{ selectedTriggers.length }} Triggers
+            {{ selectedTriggers.length }} Trigger<span v-if="selectedTriggers.length!=1">s</span>
           </v-btn>
           &nbsp;RUN:
           <v-btn color="white" text>
@@ -38,13 +38,6 @@
           <template v-for="(trigger, index) in selectedTriggers" class="pa-2">
             <div ref="drawing" :key="index" style="width:800px; height:600px"></div>
           </template>
-          <!--
-          <template v-for="plot in plotsToDraw" class="pa-2">
-            <v-col cols="12" sm="12" md="6" :key="selectedRun + plot[0].trigger" style="padding:0px">
-              <Plotly :data="plot" :layout="{'title':plot[0].trigger, 'titlefont':{'family':'Inter'},  'xaxis': {'title': plot[0].xvar, 'titlefont':{'family':'Inter'}}, 'yaxis': {'title': plot[0].yvar, 'titlefont':{'family':'Inter'}}}" :display-mode-bar="false"></Plotly>
-            </v-col>
-          </template>
-        -->
         </v-row>
       </v-container>
     </v-content>
@@ -62,7 +55,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-footer fixed> JSROOT - API: <a target="_blank" :href="apiEndpoint + 'ui'"> {{ apiEndpoint }}</a> - commithash:<pre>{{commitHash}}</pre> - feedback: <a href="https://gitlab.cern.ch/avivace/ratemon-ui">gitlab.cern.ch/avivace/ratemon-ui</a></v-footer>
+    <v-footer fixed> JSROOT - API: <a target="_blank" :href="apiEndpoint + 'ui'"> {{ apiEndpoint }}</a> - commithash:
+      <pre>{{commitHash}}</pre> - feedback: <a href="https://gitlab.cern.ch/avivace/ratemon-ui">gitlab.cern.ch/avivace/ratemon-ui</a></v-footer>
   </v-app>
 </template>
 <script>
@@ -125,7 +119,7 @@ export default {
       // Draw the plot in the requested Div
       new JSROOT.TFile(endpoint, function(file) {
         file.ReadObject(objectName, function(obj) {
-        JSROOT.draw(targetDiv, obj);
+          JSROOT.draw(targetDiv, obj);
         });
       });
     },
@@ -133,8 +127,8 @@ export default {
       console.log(this.selectedTriggers)
       // Use deconstructing to unpack entries()
       for (let [index, trigger] of this.selectedTriggers.entries()) {
-        
-        let divname = 'drawing'+trigger
+
+        let divname = 'drawing' + trigger
         console.log(divname)
         // when ref is used on elements/components with v-for, the registered reference will be an Array containing DOM nodes or component instances.
         let targedDiv = this.$refs["drawing"][index]
@@ -142,72 +136,12 @@ export default {
       }
 
     },
-    getRates: function() {
-      this.dialog = false
-      console.log("Getting Rates")
-      this.plots = []
-      this.ignoredPlots = []
-      let axios = this.$axios
-      let method = 'rawRates'
-      let i = 0
-      for (let trigger of this.selectedTriggers) {
-
-        axios.get(this.apiEndpoint + method, {
-            params: {
-              'triggerKey': trigger,
-              'runNumber': this.selectedRun
-            }
-          })
-          .then(response => {
-
-            //console.log("Got", trigger, "rates for run", this.selectedRun)
-            if (response.data.xVals == null) {
-              this.ignoredPlots.push(trigger)
-            } else {
-              console.log(response.data.fit)
-              let plot = [{
-                x: response.data.xVals,
-                y: response.data.yVals,
-                xvar: response.data.xvar,
-                yvar: response.data.yvar,
-                type: "scattergl",
-                mode: "markers",
-                marker: {
-                  size: 3
-                },
-                trigger,
-              }]
-              this.plots.push(plot)
-
-            }
-
-
-
-          })
-          .catch(error => {
-            console.log("error")
-          })
-          .then(() => {
-            i += 1
-            // FIXME: a proper callback?
-            if (i == this.selectedTriggers.length) {
-              this.plotRates()
-            }
-          })
-      }
-
-    }
   },
   mounted: function() {
-    // Autoselects the first
+    // Autoselects the first run
     this.selectedRun = this.availableRuns[0]
-    //this.getRates();
-    //this.plotTrigger("< PU >", "pre-deadtime unprescaled rate", "HLT_CaloJet500_NoJetID", 325172, this.$refs["drawing"][1])
+    // Initial drawing
     this.drawPlots()
-    console.log(this.$refs["drawing"])
-
-    
-
   },
 };
 
