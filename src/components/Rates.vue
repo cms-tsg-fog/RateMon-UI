@@ -10,7 +10,7 @@
           </v-btn>
           &nbsp;RUN:
           <v-btn color="white" text>
-            <v-autocomplete @change="getRates" v-model="selectedRun" small :items="availableRuns"></v-autocomplete>
+            <v-autocomplete @change="drawPlots" v-model="selectedRun" small :items="availableRuns"></v-autocomplete>
           </v-btn>
         </div>
         <v-menu left bottom>
@@ -35,8 +35,9 @@
           </v-col>
         </v-row>
         <v-row>
-          <div ref="drawing" style="width:800px; height:600px"></div>
-
+          <template v-for="(trigger, index) in selectedTriggers" class="pa-2">
+            <div ref="drawing" :key="index" style="width:800px; height:600px"></div>
+          </template>
           <!--
           <template v-for="plot in plotsToDraw" class="pa-2">
             <v-col cols="12" sm="12" md="6" :key="selectedRun + plot[0].trigger" style="padding:0px">
@@ -55,7 +56,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="getRates">
+          <v-btn color="green darken-1" text @click="drawPlots">
             Apply
           </v-btn>
         </v-card-actions>
@@ -75,10 +76,10 @@ export default {
     plotsPerPage: 4,
     totalPages: 0,
     commitHash: process.env.VUE_APP_GIT_HASH,
-    apiEndpoint: 'http://localhost:8081/api/v1/',
+    apiEndpoint: 'http://brandeis.cern.ch:8085/api/v1/',
     availableRuns: [325172, 325170, 325169, 325159, 325117, 325057, 305112, 315257, 315259, 315264],
     selectedRun: null,
-    selectedTriggers: ["HLT_PFJet450", "HLT_AK8PFJet200", "HLT_Photon60_R9Id90_CaloIdL_IsoL_DisplacedIdL_PFHT350MinPFJet15", "L1_SingleEG26er2p5", "L1_SingleTau120er2p1"],
+    selectedTriggers: ["HLT_CaloJet500_NoJetID", "HLT_PFJet450", "HLT_AK8PFJet200", "HLT_Photon60_R9Id90_CaloIdL_IsoL_DisplacedIdL_PFHT350MinPFJet15", "L1_SingleEG26er2p5", "L1_SingleTau120er2p1"],
     dialog: false,
     plots: [],
     availableTriggerKeys: [{
@@ -111,6 +112,35 @@ export default {
       console.log("Updating pagination and rendering page")
       this.totalPages = parseInt(this.plots.length / this.plotsPerPage) + ((this.plots.length % this.plotsPerPage > 0) ? 1 : 0)
       this.plotsToDraw = this.plots.slice((this.selectedPage - 1) * this.plotsPerPage, this.selectedPage * this.plotsPerPage)
+      console.log(this.plotsToDraw)
+    },
+    plotTrigger: function(var_X, var_Y, trigger, runNumber, targetDiv) {
+
+      // Reconstruct the object name given by RateMon's PlotMaker class
+      let objectName = `${trigger}_${var_X}_vs_${var_Y};1`
+      // Build the GET call to the API
+      let endpoint = `${this.apiEndpoint}ratesROOT?runNumber=${runNumber}&triggerKey=${trigger}`
+
+      console.log("Calling", endpoint)
+      // Draw the plot in the requested Div
+      new JSROOT.TFile(endpoint, function(file) {
+        file.ReadObject(objectName, function(obj) {
+        JSROOT.draw(targetDiv, obj);
+        });
+      });
+    },
+    drawPlots: function() {
+      console.log(this.selectedTriggers)
+      // Use deconstructing to unpack entries()
+      for (let [index, trigger] of this.selectedTriggers.entries()) {
+        
+        let divname = 'drawing'+trigger
+        console.log(divname)
+        // when ref is used on elements/components with v-for, the registered reference will be an Array containing DOM nodes or component instances.
+        let targedDiv = this.$refs["drawing"][index]
+        this.plotTrigger("< PU >", "pre-deadtime unprescaled rate", trigger, this.selectedRun, targedDiv)
+      }
+
     },
     getRates: function() {
       this.dialog = false
@@ -170,21 +200,14 @@ export default {
   },
   mounted: function() {
     // Autoselects the first
-    //this.selectedRun = this.availableRuns[0]
+    this.selectedRun = this.availableRuns[0]
     //this.getRates();
+    //this.plotTrigger("< PU >", "pre-deadtime unprescaled rate", "HLT_CaloJet500_NoJetID", 325172, this.$refs["drawing"][1])
+    this.drawPlots()
+    console.log(this.$refs["drawing"])
 
-    // Reconstruct the object name given by RateMon's PlotMaker class
-    let targetdiv = this.$refs.drawing
-    let var_X = "< PU >"
-    let var_Y = "pre-deadtime unprescaled rate"
-    let trigger = "HLT_CaloJet500_NoJetID"
-    let objectName = `${trigger}_${var_X}_vs_${var_Y};1`
+    
 
-    new JSROOT.TFile("http://brandeis.cern.ch:8085/api/v1/ratesROOT?runNumber=305112&triggerKey=HLT_CaloJet500_NoJetID", function(file) {
-      file.ReadObject(objectName, function(obj) {
-      JSROOT.draw(targetdiv, obj);
-      });
-    });
   },
 };
 
